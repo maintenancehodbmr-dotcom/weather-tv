@@ -1,22 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="refresh" content="600">
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden;
-    }
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
+    body { margin: 0; }
+    iframe { width: 100%; height: 100vh; border: none; }
   </style>
 </head>
 <body>
-  <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQlEV1jtGNy5llbS0o4sCX4KM_VN_iR_z7BnlKLIc_DqEv6ezepspnm-_YoHqYhIdnesgK7QGL4yjqt/pubhtml?gid=776061048&headers=false"></iframe>
+  <iframe id="sheet"></iframe>
+
+  <script>
+    function reloadSheet() {
+      const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQlEV1jtGNy5llbS0o4sCX4KM_VN_iR_z7BnlKLIc_DqEv6ezepspnm-_YoHqYhIdnesgK7QGL4yjqt/pubhtml?gid=776061048&single=true&widget=true&headers=false&rand=" + new Date().getTime();
+      document.getElementById("sheet").src = url;
+    }
+
+    function scheduleUpdate() {
+      const now = new Date();
+      const next = new Date();
+
+      // ตั้งให้เป็น นาทีที่ 8 ของชั่วโมงถัดไป
+      next.setMinutes(8);
+      next.setSeconds(0);
+      next.setMilliseconds(0);
+
+      if (now.getMinutes() >= 8) {
+        next.setHours(now.getHours() + 1);
+      }
+
+      const delay = next - now;
+
+      setTimeout(() => {
+        reloadSheet();
+        setInterval(reloadSheet, 60 * 60 * 1000); // ทุก 1 ชั่วโมง
+      }, delay);
+    }
+
+    // โหลดครั้งแรกทันที
+    reloadSheet();
+
+    // ตั้งเวลาให้ตรง Telegram
+    scheduleUpdate();
+  </script>
 </body>
 </html>
